@@ -1,6 +1,9 @@
 import csv
 from typing import List, Dict
 
+MONTHS = ["January", "Feburary", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"]
+
 
 class Transaction():
     positive = ["Income", "Paycheck", "Investments",
@@ -27,7 +30,9 @@ class Transaction():
 
 def main():
     data = read_file()
-    build_report(data)
+    [report, months] = build_report(data)
+    l = get_categories(months)
+    build_csv(l, report, months)
     return
 
 
@@ -65,6 +70,10 @@ def build_report(data: list):
                 cur[t.category] += t.amount
             else:
                 cur[t.category] = t.amount
+            if "total" in cur:
+                cur["total"] += t.amount
+            else:
+                cur["total"] = t.amount
         j += 1
         pass
     # print report
@@ -77,17 +86,40 @@ def build_report(data: list):
     return [report, months]
 
 
-def get_categories(trans: List[Transaction]) -> list:
-    res = []
-    for t in trans:
-        if t.category not in res:
-            res.append(t.category)
+def get_categories(trans: List[List[Transaction]]) -> list:
+    res = ["total"]
+    for m in trans:
+        for t in m:
+            if t.category not in res:
+                res.append(t.category)
     d = {}
     i = 0
     for n in res:
         d[n] = i
         i += 1
     return d
+
+
+def build_csv(cat_d: Dict[str, int], report: List[Dict[str, float]], months: List[List[Transaction]]):
+    final = [[months[0][0].date.split("/")[2]]]
+    final[0].extend(MONTHS)
+    cat_by_month = []
+    for cat, v in cat_d.items():
+        l = [cat, "", "", "", "", "", "", "", "", "", "", "", ""]
+        cat_by_month.append(l)
+
+    # add numbers
+    offset = 1
+    for m in report:
+        for k, v in m.items():
+            cat_by_month[cat_d[k]][offset] = v
+        offset += 1
+
+    final.extend(cat_by_month)
+    out = open("output.csv", "w")
+    wr = csv.writer(out)
+    wr.writerows(final)
+    out.close()
 
 
 main()

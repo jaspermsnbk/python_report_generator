@@ -1,5 +1,28 @@
 import csv
-# from typing import List, Dict
+from typing import List, Dict
+
+
+class Transaction():
+    positive = ["Income", "Paycheck", "Investments",
+                "Transfer", "Returned Purchase", "Reimbursement"]
+
+    def __init__(self, s: str, date: str, description: str, o_description: str, amount: float, trans_type: str, category: str, account_name: str, labels="", notes=""):
+        self.date = date
+        self.description = description
+        self.o_description = o_description
+        self.amount = amount
+        self.trans_type = trans_type
+        self.category = category
+        self.account_name = account_name
+        self.labels = labels
+        self.notes = notes
+        self.s = s
+        if self.category not in self.positive:
+            self.amount *= -1
+
+    def __str__(self) -> str:
+        return self.s
+    pass
 
 
 def main():
@@ -60,35 +83,17 @@ def build_report(data: list):
     return [report, months]
 
 
-def get_categories(trans: list) -> list:
+def get_categories(trans: List[Transaction]) -> list:
     res = []
     for t in trans:
         if t.category not in res:
             res.append(t.category)
-    return res
-
-
-class Transaction():
-    positive = ["Income", "Paycheck", "Investments",
-                "Transfer", "Returned Purchase", "Reimbursement"]
-
-    def __init__(self, s: str, date: str, description: str, o_description: str, amount: float, trans_type: str, category: str, account_name: str, labels="", notes=""):
-        self.date = date
-        self.description = description
-        self.o_description = o_description
-        self.amount = amount
-        self.trans_type = trans_type
-        self.category = category
-        self.account_name = account_name
-        self.labels = labels
-        self.notes = notes
-        self.s = s
-        if self.category not in self.positive:
-            self.amount *= -1
-
-    def __str__(self) -> str:
-        return self.s
-    pass
+    d = {}
+    i = 0
+    for n in res:
+        d[n] = i
+        i += 1
+    return d
 
 
 main()

@@ -26,12 +26,12 @@ class Transaction():
 
 
 def main():
-    data = handle_file()
+    data = read_file()
     build_report(data)
     return
 
 
-def handle_file():
+def read_file():
     filename = input("transactions file to use: ")
     data = []
     skip = True
@@ -57,12 +57,6 @@ def build_report(data: list):
     for t in data:
         month = int(t.date.split("/")[0]) - 1  # get month
         months[month].append(t)  # append transaction to month
-    # i = 1
-    # for m in months: #print out raw data
-    #     print(i)
-    #     for t in m:
-    #         print(str(t))
-    #     i += 1
     j = 0
     for m in months:
         cur = report[j]

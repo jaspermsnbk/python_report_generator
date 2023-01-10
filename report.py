@@ -60,6 +60,14 @@ def build_report(data: list):
     return [report, months]
 
 
+def get_categories(trans: list) -> list:
+    res = []
+    for t in trans:
+        if t.category not in res:
+            res.append(t.category)
+    return res
+
+
 class Transaction():
     positive = ["Income", "Paycheck", "Investments",
                 "Transfer", "Returned Purchase", "Reimbursement"]
